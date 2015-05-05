@@ -236,15 +236,15 @@ echo "GEN000540 Complete"
 
 # GEN000480 (G015)
 echo "Locking down GEN000480"
-echo "Make the user waits four seconds if they fail after LOGIN_RETRIES" >> /etc/login.defs
-echo "FAIL_DELAY 4" >> /etc/login.defs
+echo "Make the user wait 5 minutes if they fail after LOGIN_RETRIES" >> /etc/login.defs
+echo "FAIL_DELAY 300" >> /etc/login.defs
 echo "GEN000480 Complete"
 
 # GEN000820
 echo "Locking down GEN000820"
-perl -npe 's/PASS_MIN_LEN\s+5/PASS_MIN_LEN  9/' -i /etc/login.defs
+perl -npe 's/PASS_MIN_LEN\s+5/PASS_MIN_LEN  20/' -i /etc/login.defs
 #STIG specifies using foloowing, but it's not a valid parameter
-#echo "PASSLENGTH 9" >> /etc/login.defs
+#echo "PASSLENGTH 20" >> /etc/login.defs
 echo "GEN000820 Complete"
 
 ## As of RHEL/CentOS 5.3, authconfig supports SHA password encryption
@@ -256,12 +256,12 @@ echo "Done"
 ###### PAM Modifications
 # These modifications apply to GEN000460, GEN000600 and GEN000620
 touch /var/log/tallylog
-# for Centos 7.1 may need to create /etc/pam.d/system-auth-local as well
+touch /etc/pam.d/system-auth-local 
 cat << 'EOF' > /etc/pam.d/system-auth-local
 #%PAM-1.0
 # Auth Section
 auth required pam_tally2.so unlock_time=900 onerr=fail no_magic_root
-auth required pam_faildelay.so delay=5000000
+auth required pam_faildelay.so delay=300
 auth include system-auth-ac
 
 # Accounts Section
@@ -269,7 +269,7 @@ account required pam_tally2.so
 account include system-auth-ac
 
 # Password Section
-password required pam_pwhistory.so   use_authtok remember=5 retry=3
+password required pam_pwhistory.so   use_authtok remember=10 retry=3
 password requisite pam_passwdqc.so min=disabled,disabled,16,12,8
 password include system-auth-ac
 
