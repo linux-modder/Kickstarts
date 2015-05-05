@@ -65,37 +65,128 @@ firewall --enabled --port=22:tcp  # This will be further restricted later
 reboot
 
 ########## UPDATE THE PACKAGE LIST #############
-%packages
+%packages --default
 
-# Packages added for security
+-fedora-productimg-cloud
+fedora-productimg-server
+-fedora-productimg-workstation
+
+# pungi is an inclusive depsolver so that multiple packages are brought 
+# in to satisify dependencies and we don't always want that. So we  use
+# an exclusion list to cut out things we don't want
+
+-kernel*debug*
+kernel-kdump*
+kernel-tools*
+-syslog-ng*
+-astronomy-bookmarks
+generic-logos*
+generic-release*
+-GConf2-dbus*
+-bluez-gnome
+community-mysql*
+zsh
 aide
 audit
 vlock
-# Packages removed because we don't need/use them
--compiz
--emacs-leim
--emacspeak
--ethereal
--ethereal-gnome
--gnome-games
--isdn4k-utils
--nmap
--octave
--oprofile
--rcs
--tcpdump
--valgrind
--zsh
+inxi
+htop
+terminator
+@xfce-desktop
+xfce-desktop-environment
+vnstat
+lynx
+tuned
+# core
+kernel*
+dracut-*
 
+# No desktops
+-cinnamon*
+-enlightenment*
+-gnome-shell
+-gnome-session
+-kde*
+lightdm
+-lightdm-razorqt
+# Pulls in qt
+-oprofile-gui
+
+-@legacy-fonts
+
+-@multimedia
+
+## common stuff
+@guest-agents
+@standard
+@core
+@hardware-support
+
+# Fedora Server.
+# Including this causes the fedora-release-server package to be included,
+# which in turn enables server-product-environment, and due to to its priority
+# this will be the default environment.
+@^server-product-environment
+@server-product
+@headless-management
+@container-management
+@domain-client
+@server-hardware-support
+
+# Common server packages
+@mysql
+@sql-server
+@web-server
+
+# Web Server environment
+@haproxy
+@mongodb
+@perl-web
+@python-web
+@php
+@rubyonrails
+@tomcat
+
+# Infrastructure Server
+@directory-server
+@dogtag
+@dns-server
+@freeipa-server
+@ftp-server
+@mail-server
+@network-server
+@printing
+@smb-server
+@virtualization
+@load-balancer
+@ha
+
+@javaenterprise
+
+# “uservisible” groups we want to offer
+@editors
+@network-server
+@system-tools
+@text-internet
+
+# Things needed for installation
+@anaconda-tools
+fedora-productimg-server
+
+# Langpacks
+autocorr-en
+hunspell-en
+man-pages-en
+-gimp-help-*
+
+# Removals
+-PackageKit-zif
+-zif
+%end
 %pre
 
 %post --nochroot
-mkdir /mnt/sysimage/tmp/ks-tree-copy
-if [ -d /oldtmp/ks-tree-shadow ]; then
-    cp -fa /oldtmp/ks-tree-shadow/* /mnt/sysimage/tmp/ks-tree-copy
-elif [ -d /tmp/ks-tree-shadow ]; then
-    cp -fa /tmp/ks-tree-shadow/* /mnt/sysimage/tmp/ks-tree-copy
-fi
+cp -fa /media/yum.repos.d/* /mnt/sysimage/etc/yum.repos.d
 cp /etc/resolv.conf /mnt/sysimage/etc/resolv.conf
 
 %post
@@ -103,11 +194,6 @@ cp /etc/resolv.conf /mnt/sysimage/etc/resolv.conf
 ## Log errors by creating one big subshell
 (
 
-if [ -f /usr/share/rhn/RPM-GPG-KEY ]; then
-  rpm --import /usr/share/rhn/RPM-GPG-KEY 
-elif [ -f /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-5 ]; then  ## replace with Centos 5/6/7.x / RHEL 5/6/7.x
-  rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-5 ## replace to match line above
-fi
 
 ############# Adding Security Enhancements ############################
 
