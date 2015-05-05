@@ -30,7 +30,7 @@ netinstall
 url --url http://dl.fedoraproject.org/pub/fedora/linux/development/22/x86_64/os  ## mirror list available @ http://centos.org/download/mirrors
 lang en_US.UTF-8
 keyboard us
-xkblayout='us,ara'
+xkblayout='us,ara'  ## keyboard layouts for use in X
 network --noipv6 --onboot=yes --bootproto=dhcp 
 
 
