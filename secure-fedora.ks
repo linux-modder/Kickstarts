@@ -3,7 +3,7 @@
 ############## Secure Kickstart version 1.0 ##############
 ##########################################################
 #
-# Name: secure-feodra.ks
+# Name: secure-fedora.ks
 # Description: Kickstart file with many of the DISA STIG
 #	       changes applied via %post functionality
 # Distro: CentOS 5-7 or RHEL 5-7 / Fedora 20+ 
@@ -12,14 +12,14 @@
 #
 #   There are a number of considerations to be made when 
 # using this document. Partitioning space, system use, 
-# and other tasks that make servers different.
+# and other tasks that make servers different. This script is VERY security minded and leans heavily toward the secure vs. speedy.
 #
 ####################### Usage ############################
 #
 # 1. Set up partitioning, or leave commented to get the 
 #    anaconda partitioner. 
 # 2. Review the package list. Add or remove as needed
-# 3. This kickstart assumes a local mirror to install
+# 3. This kickstart assumes a network connection and netinstall/upgrade and a cdrom install as default options to install
 #     from. Change this to suit your needs.
 
 install
@@ -30,7 +30,9 @@ netinstall
 url --url http://dl.fedoraproject.org/pub/fedora/linux/development/22/x86_64/os  ## mirror list available @ http://centos.org/download/mirrors
 lang en_US.UTF-8
 keyboard us
+xkblayout='us,ara'
 network --noipv6 --onboot=yes --bootproto=dhcp 
+
 
 #text
 ########## !! CHANGE THIS !! ##########
