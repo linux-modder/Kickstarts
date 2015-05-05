@@ -62,7 +62,7 @@ selinux --enforcing
 rootpw Serverguardianangel118*matrixdevel3877
 timezone --utc America/New_York
 firewall --enabled --port=22:tcp  # This will be further restricted later
-reboot
+halt
 
 ########## UPDATE THE PACKAGE LIST #############
 %packages --default
@@ -284,8 +284,8 @@ EOF
 
 # Create some basic shell rules for users. 
 
-echo "Idle users will be removed after 15 minutes"
-echo "readonly TMOUT=600" >> /etc/profile.d/os-security.sh
+echo "Idle users will be removed after 30 minutes"
+echo "readonly TMOUT=1800" >> /etc/profile.d/os-security.sh
 echo "readonly HISTFILE" >> /etc/profile.d/os-security.sh
 chmod +x /etc/profile.d/os-security.sh
 
@@ -297,7 +297,7 @@ perl -npe 's/umask\s+0\d2/umask 077/g' -i /etc/csh.cshrc
 echo "GEN002560 Complete"
 
 
-## Require GUI consoles to lock if idle longer than 10 minutes. 
+## Require GUI consoles to lock if idle longer than 30 minutes. 
 if [ -f /etc/gconf/gconf.xml.mandatory ]; then 
   gconftool-2 --direct \
 	--config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
@@ -313,7 +313,7 @@ if [ -f /etc/gconf/gconf.xml.mandatory ]; then
   gconftool-2 --direct \
 	--config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
 	--type int \
-	--set /apps/gnome-screensaver/idle_delay 10
+	--set /apps/gnome-screensaver/idle_delay 30
 fi
 
 ## No one gets to run cron or at jobs unless we say so.
@@ -334,7 +334,9 @@ echo "Locking down GEN000400"
 # Change this to your own banner for organizations outside the Scary Zone
 
 cat << 'EOF' >/etc/issue
-USE OF THIS COMPUTER SYSTEM, AUTHORIZED OR UNAUTHORIZED, CONSTITUTES CONSENT TO MONITORING OF THIS SYSTEM.  UNAUTHORIZED USE MAY SUBJECT YOU TO CRIMINAL PROSECUTION.  EVIDENCE OF UNAUTHORIZED USE COLLECTED DURING MONITORING MAY BE USED FOR ADMINISTRATIVE, CRIMINAL, OR OTHER ADVERSE ACTION.  USE OF THIS SYSTEM CONSTITUTES CONSENT TO MONITORING FOR THESE PURPOSES.
+**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************AUTHORIZED OR UNAUTHORIZED CONNECTIONS TO / USE OF THIS SYSTEM ARE SUBJECT TO MONITORING,  WHICH MAY INCLUDE BUT IS NOT LIMITED TO, KEYLOGGING,IP TRAFFIC / IP  ADDRESS CHANGES / PROXY USE, NETWORK USAGE (NAMELY OVERLY HIGH OR ABUSIVE ******USE OF BANDWIDTH, OR RESOURCES, CONNECTING TO UNSAFE / UNAPPROVED SITES -- FOR EXAMPLE {SEARCHES FOR / TO PORN/ASSASINATION TECHNIQUES/PENTESTING (NAMELY NON ACADEMIC SEARCHS(ING)),POSSIBLE QoS FEATURES.  IF YOU DO NOT CONSENT TO SUCH******MONITORING ** IMMEDIATELY STOPPING USING  / DISCONNECT ANY REMOTE SESSIONS ** THERE ARE NO EXCEPTIONS, AUTHENICATING / USING THIS SYSTEM IS GRANTED AS A PRIVELEDGE PRESUANT TO SUCH MONITORING TO ENSURE THE SAFETY /SANITY OF THE SYSTEM******AND ANY /ALL NETWORKS ATTACHED TO IT...  ATTEMPTS TO BYPASS ANY OF THESE CHECKS/SAFETIES WILL BE DEEMED AS A CASE OF UNAUTHORIZED USE AS ARE ANY WILLFULL ATTEMPTS TO OBVISCATE SUCH ACTIONS THIS INCLUDES USING OR ASKING OTHERS TO USE  ******THEIR  VALID CREDENTIALS TO ACCESS MATERIAL/SERVICES THAT YOU ARE NOT ALLOWED TO.  ALL UNAUTHORIZED ACTIONS WILL BE PROSECUTED UNDER THE APPLICABLE CAMPUS,LOCAL,STATE,FEDERAL,INTERNATIONAL POLICIES,LAWS,STATUTES OF THE SYSTEMS' LOCALE******AND THAT OF THE USER IN QUESTION (IF THEY ARE NOT THE SAME)...THIS IS YOUR ONE AND ONLY WARNING....IF YOU CONTINUE TO CONNECT /USE THIS SYSTEM IT IS A CONFIRMATION OF YOUR CONSENT TO SUCH MONITORING AND IS LOGGED AS SUCH UPON LOGIN...***
+************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
+
 EOF
 echo "GEN000400 Completed"
 
@@ -350,7 +352,10 @@ perl -npe 's/exit\s0/\n/' -i /etc/gdm/PreSession/Default
 cat << 'EOF' >> /etc/gdm/PreSession/Default
 /usr/bin/gdialog --yesno "Agree = 'OK'   Disagree = 'Cancel'
 
-USE OF THIS COMPUTER SYSTEM, AUTHORIZED OR UNAUTHORIZED, CONSTITUTES CONSENT TO MONITORING OF THIS SYSTEM.  UNAUTHORIZED USE MAY SUBJECT YOU TO CRIMINAL PROSECUTION.  EVIDENCE OF UNAUTHORIZED USE COLLECTED DURING MONITORING MAY BE USED FOR ADMINISTRATIVE, CRIMINAL, OR OTHER ADVERSE ACTION.  USE OF THIS SYSTEM CONSTITUTES CONSENT TO MONITORING FOR THESE PURPOSES.
+**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************AUTHORIZED OR UNAUTHORIZED CONNECTIONS TO / USE OF THIS SYSTEM ARE SUBJECT TO MONITORING,  WHICH MAY INCLUDE BUT IS NOT LIMITED TO, KEYLOGGING,IP TRAFFIC / IP  ADDRESS CHANGES / PROXY USE, NETWORK USAGE (NAMELY OVERLY HIGH OR ABUSIVE ******USE OF BANDWIDTH, OR RESOURCES, CONNECTING TO UNSAFE / UNAPPROVED SITES -- FOR EXAMPLE {SEARCHES FOR / TO PORN/ASSASINATION TECHNIQUES/PENTESTING (NAMELY NON ACADEMIC SEARCHS(ING)),POSSIBLE QoS FEATURES.  IF YOU DO NOT CONSENT TO SUCH******MONITORING ** IMMEDIATELY STOPPING USING  / DISCONNECT ANY REMOTE SESSIONS ** THERE ARE NO EXCEPTIONS, AUTHENICATING / USING THIS SYSTEM IS GRANTED AS A PRIVELEDGE PRESUANT TO SUCH MONITORING TO ENSURE THE SAFETY /SANITY OF THE SYSTEM******AND ANY /ALL NETWORKS ATTACHED TO IT...  ATTEMPTS TO BYPASS ANY OF THESE CHECKS/SAFETIES WILL BE DEEMED AS A CASE OF UNAUTHORIZED USE AS ARE ANY WILLFULL ATTEMPTS TO OBVISCATE SUCH ACTIONS THIS INCLUDES USING OR ASKING OTHERS TO USE  ******THEIR  VALID CREDENTIALS TO ACCESS MATERIAL/SERVICES THAT YOU ARE NOT ALLOWED TO.  ALL UNAUTHORIZED ACTIONS WILL BE PROSECUTED UNDER THE APPLICABLE CAMPUS,LOCAL,STATE,FEDERAL,INTERNATIONAL POLICIES,LAWS,STATUTES OF THE SYSTEMS' LOCALE******AND THAT OF THE USER IN QUESTION (IF THEY ARE NOT THE SAME)...THIS IS YOUR ONE AND ONLY WARNING....IF YOU CONTINUE TO CONNECT /USE THIS SYSTEM IT IS A CONFIRMATION OF YOUR CONSENT TO SUCH MONITORING AND IS LOGGED AS SUCH UPON LOGIN...***
+************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
+
+
 
 Agree = 'OK'   Disagree = 'Cancel'"
 if ( test 1 -eq $? ); then
@@ -526,10 +531,10 @@ EOF
 # with recommendations
 echo "Locking down IAVA0410 and GEN003700"
 /sbin/chkconfig bluetooth off
-/sbin/chkconfig irda off
-/sbin/chkconfig lm_sensors off
+/sbin/chkconfig irda on
+/sbin/chkconfig lm_sensors on
 /sbin/chkconfig portmap off
-/sbin/chkconfig rawdevices off
+/sbin/chkconfig rawdevices on
 /sbin/chkconfig rpcgssd off
 /sbin/chkconfig rpcidmapd off
 /sbin/chkconfig rpcsvcgssd off
@@ -612,56 +617,15 @@ EOF
 # http://kbase.redhat.com/faq/docs/DOC-2475
 2>/dev/null >/dev/tcp/google.com/80
 if [ $? -eq 0 ]; then
-  if [ -f /usr/share/rhn/RPM-GPG-KEY ]; then
-    rhnreg_ks --profilename=secure-rhel --activationkey=xxxxxxxxxxx
-  fi
-  cat << 'EOF' >> /etc/yum.conf
-exclude = *.i?86
-EOF
-  yum -y remove *.i?86
-  yum -y update
+echo "Networking is working" || echo "Networking is down"
+fi
+
+  dnf -y clean all 
+  dnf -y update
 else
 echo "There's no network. No updates performed"
 fi
 
-############### Beef up the default ruleset for AIDE #################
-# Setup AIDE off this baseline
-echo "Setting up baseline AIDE configuration ...."
-echo "NOTE!!! PLEASE REVIEW THIS, AND EDIT FOR YOUR SPECIFIC CONFIGURATION!"
-
-# Write /etc/aide.conf
-echo "Appending default setuid/setgid and 666 f/d to default /etc/aide.conf"
-cat << 'EOF' >> /etc/aide.conf
-
-# World-Writable files and directories
-# Note: There are no ww files in the base install
-
-# World-Writable Directories in base install
-
-/tmp                            PERMS
-/tmp/.pk11ipc1                  PERMS
-/tmp/.font-unix                 PERMS
-/tmp/.ICE-unix                  PERMS
-/tmp/.X11-unix                  PERMS
-/var/tmp                        PERMS
-
-# set-UID and set-GID files in base install
-
-/sbin/netreport                 PERMS
-/usr/libexec/utempter/utempter  PERMS
-/usr/sbin/lockdev               PERMS
-/usr/sbin/sendmail.sendmail     PERMS
-/usr/lib/vte/gnome-pty-helper   PERMS
-/usr/bin/locate                 PERMS
-/usr/bin/write                  PERMS
-/usr/bin/wall                   PERMS
-/usr/bin/ssh-agent              PERMS
-/usr/bin/lockfile               PERMS
-/usr/bin/screen                 PERMS
-EOF
-
-echo "done adding to /etc/aide.conf" 
-echo ""
 echo "Building a initial AIDE DB..."
 /usr/sbin/aide -i
 echo "Initial AIDE DB complete"
