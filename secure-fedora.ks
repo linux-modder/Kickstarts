@@ -61,10 +61,9 @@ logvol	/var/tmp	--fstype xfs	--name=var_tmp	--vgname=Secured-Fedora	--size=5120
 logvol 	/snaps	--fstype xfs	--name=snapshots	--vgname=Secured-Fedora	--size=9216
 logvol	/home	--fstype xfs	--name=home	--vgname=Secured-Fedora	--size=153600
 
-bootloader --location mbr --password GameOVer
+bootloader --location mbr
 authconfig --enableshadow --enablesha512
 selinux --enforcing
-rootpw Serverguardianangel118*matrixdevel3877
 timezone --utc America/New_York
 firewall --enabled --port=22:tcp  # This will be further restricted later
 halt
