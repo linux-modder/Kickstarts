@@ -41,25 +41,25 @@ network --nameservers=4.2.2.2,8.8.8.8,10.160.195.60,129.174.68.90,208.67.222.222
 
 #text
 ########## !! CHANGE THIS !! ##########
-zerombr
-clearpart --all
-partition /biosboot  --fstype vfat     --size=2  --ondisk=sda   
-partition /boot    --fstype xfs	   --size=512   --ondisk=sda
-partition pv.Secured-Fedora --size=0 --grow
-volgroup fedora --pesize=59489 pv.Secured-Fedora
-logvol	swap	--fstype xfs	--name=swap	--vgname=Secured-Fedora		--size=4098
-logvol	/	--fstype xfs		--name=root	--vgname=Secure-Fedora		--size=5120
-logvol	/usr	--fstype xfs	--name=usr	--vgname=Secured-Fedora		--size=25600 
-logvol	/usr/local	--fstype xfs	--name=usr_local	--vgname=Secured-Fedora		--size=5120
-logvol	/tmp	--fstype xfs  --name=tmp	--vgname=Secured-Fedora	--size=5120
-logvol 	/opt	--fstype xfs	--name=opt	--vgname=Secured-Fedora	--size=5120
-logvol	/srv	--fstype xfs	--name=srv	--vgname=Secured-Fedora	-size=8192
-logvol	/secure	--fstype xfs	--name=secure	--vgname=Secured-Fedora	--size=1024
-logcol	/var	--fstype xfs	--name=var	--vgname=Secured-Fedora	--size=5120
-logvol 	/var/lib	--fstype xfs	--name=var_lib	--vgname=Secured-Fedora	--size=5120
-logvol	/var/tmp	--fstype xfs	--name=var_tmp	--vgname=Secured-Fedora	--size=5120
-logvol 	/snaps	--fstype xfs	--name=snapshots	--vgname=Secured-Fedora	--size=9216
-logvol	/home	--fstype xfs	--name=home	--vgname=Secured-Fedora	--size=153600
+#zerombr
+#clearpart --all
+#partition /biosboot  --fstype vfat     --size=2  --ondisk=sda   
+#partition /boot    --fstype xfs	   --size=512   --ondisk=sda
+#partition pv.Secured-Fedora --size=0 --grow
+#volgroup fedora --pesize=59489 pv.Secured-Fedora
+#logvol	swap	--fstype xfs	--name=swap	--vgname=Secured-Fedora		--size=4098
+#logvol	/	--fstype xfs		--name=root	--vgname=Secure-Fedora		--size=5120
+#logvol	/usr	--fstype xfs	--name=usr	--vgname=Secured-Fedora		--size=25600 
+#logvol	/usr/local	--fstype xfs	--name=usr_local	--vgname=Secured-Fedora		--size=5120
+#logvol	/tmp	--fstype xfs  --name=tmp	--vgname=Secured-Fedora	--size=5120
+#logvol 	/opt	--fstype xfs	--name=opt	--vgname=Secured-Fedora	--size=5120
+#logvol	/srv	--fstype xfs	--name=srv	--vgname=Secured-Fedora	-size=8192
+#logvol	/secure	--fstype xfs	--name=secure	--vgname=Secured-Fedora	--size=1024
+#logcol	/var	--fstype xfs	--name=var	--vgname=Secured-Fedora	--size=5120
+#logvol 	/var/lib	--fstype xfs	--name=var_lib	--vgname=Secured-Fedora	--size=5120
+#logvol	/var/tmp	--fstype xfs	--name=var_tmp	--vgname=Secured-Fedora	--size=5120
+#logvol 	/snaps	--fstype xfs	--name=snapshots	--vgname=Secured-Fedora	--size=9216
+#logvol	/home	--fstype xfs	--name=home	--vgname=Secured-Fedora	--size=153600
 
 bootloader --location mbr
 authconfig --enableshadow --enablesha512
