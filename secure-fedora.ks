@@ -34,8 +34,6 @@ xkblayout='us,ara'  ## keyboard layouts for use in X
 network --noipv6 --onboot=yes --bootproto=dhcp 
 network --device=enp9s0	--onboot=yes	--bootproto=dhcp
 network --device=wlp12s0 --onboot=yes --bootproto=dhcp
-hostname set-hostname server.linuxnet
-domainname linuxnet.net
 network --ntpservers=23.239.14.112,108.61.73.244,128.138.141.172,66.187.233.4,193.5.68.2
 network --nameservers=4.2.2.2,8.8.8.8,10.160.195.60,129.174.68.90,208.67.222.222
 
