@@ -35,7 +35,7 @@ network --noipv6 --onboot=yes --bootproto=dhcp
 network --device=enp9s0	--onboot=yes	--bootproto=dhcp
 network --device=wlp12s0 --onboot=yes --bootproto=dhcp
 network --ntpservers=23.239.14.112,108.61.73.244,128.138.141.172,66.187.233.4,193.5.68.2
-network --nameservers=4.2.2.2,8.8.8.8,10.160.195.60,129.174.68.90,208.67.222.222
+network --nameservers=4.2.2.2,8.8.8.8,10.160.195.60,68.94.156.1129.174.67.3,208.67.222.222
 
 #text
 ########## !! CHANGE THIS !! ##########
@@ -63,7 +63,7 @@ bootloader --location mbr
 authconfig --enableshadow --enablesha512
 selinux --enforcing
 timezone --utc America/New_York
-firewall --enabled --port=22:tcp  # This will be further restricted later
+firewall-cmd --enabled --port=22:tcp  # This will be further restricted later
 halt
 
 ########## UPDATE THE PACKAGE LIST #############
@@ -87,6 +87,8 @@ generic-release*
 -GConf2-dbus*
 -bluez-gnome
 community-mysql*
+tuned
+hostapd
 zsh
 aide
 audit
@@ -99,6 +101,12 @@ xfce-desktop-environment
 vnstat
 lynx
 tuned
+lynx
+android-tools
+ifuse*
+mc
+vim
+
 # core
 kernel*
 dracut-*
@@ -134,7 +142,9 @@ lightdm
 @container-management
 @domain-client
 @server-hardware-support
-
+@3d-printing
+@Design-suite
+@
 # Common server packages
 @mysql
 @sql-server
@@ -188,8 +198,10 @@ man-pages-en
 %pre
 
 %post --nochroot
-cp -fa /media/yum.repos.d/* /mnt/sysimage/etc/yum.repos.d
-cp /etc/resolv.conf /mnt/sysimage/etc/resolv.conf
+cp -fa /usb/yum.repos.d/* /mnt/sysimage/etc/yum.repos.d
+cp -fa /etc/resolv.conf /mnt/sysimage/etc/resolv.conf
+cp -fa /usb/.config/* /mnt/sysimage/home/server/.config/
+cp -fa /usb/.ssh/*  /mnt/sysimage/.ssh/
 
 %post
 
