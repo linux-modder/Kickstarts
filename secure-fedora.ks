@@ -27,7 +27,7 @@ install
 #cdrom
 netinstall
 #url --url http://192.168.1.1./installmedia
-url --url http://dl.fedoraproject.org/pub/fedora/linux/development/22/x86_64/os  
+url --url http://dl.fedoraproject.org/pub/fedora/linux/releases/22/Server/i386/os  
 lang en-US.UTF-8
 keyboard us
 xkblayout='us,ara'  ## keyboard layouts for use in X
@@ -35,29 +35,35 @@ network --noipv6 --onboot=yes --bootproto=dhcp
 network --device=enp9s0	--onboot=yes	--bootproto=dhcp
 network --device=wlp12s0 --onboot=yes --bootproto=dhcp
 network --ntpservers=23.239.14.112,108.61.73.244,128.138.141.172,66.187.233.4,193.5.68.2
-network --nameservers=4.2.2.2,8.8.8.8,10.160.195.60,68.94.156.1129.174.67.3,208.67.222.222
+network --nameservers=4.2.2.2,8.8.8.8,69.60.125.236,200.35.146.235,208.67.222.222
 
 #text
 ########## !! CHANGE THIS !! ##########
 #zerombr
-#clearpart --all
-#partition /biosboot  --fstype vfat     --size=2  --ondisk=sda   
-#partition /boot    --fstype xfs	   --size=512   --ondisk=sda
-#partition pv.Secured-Fedora --size=0 --grow
-#volgroup fedora --pesize=59489 pv.Secured-Fedora
-#logvol	swap	--fstype xfs	--name=swap	--vgname=Secured-Fedora		--size=4098
-#logvol	/	--fstype xfs		--name=root	--vgname=Secure-Fedora		--size=5120
-#logvol	/usr	--fstype xfs	--name=usr	--vgname=Secured-Fedora		--size=25600 
-#logvol	/usr/local	--fstype xfs	--name=usr_local	--vgname=Secured-Fedora		--size=5120
-#logvol	/tmp	--fstype xfs  --name=tmp	--vgname=Secured-Fedora	--size=5120
-#logvol 	/opt	--fstype xfs	--name=opt	--vgname=Secured-Fedora	--size=5120
-#logvol	/srv	--fstype xfs	--name=srv	--vgname=Secured-Fedora	-size=8192
-#logvol	/secure	--fstype xfs	--name=secure	--vgname=Secured-Fedora	--size=1024
-#logcol	/var	--fstype xfs	--name=var	--vgname=Secured-Fedora	--size=5120
-#logvol 	/var/lib	--fstype xfs	--name=var_lib	--vgname=Secured-Fedora	--size=5120
-#logvol	/var/tmp	--fstype xfs	--name=var_tmp	--vgname=Secured-Fedora	--size=5120
-#logvol 	/snaps	--fstype xfs	--name=snapshots	--vgname=Secured-Fedora	--size=9216
-#logvol	/home	--fstype xfs	--name=home	--vgname=Secured-Fedora	--size=153600
+clearpart --all
+partition /biosboot  --fstype vfat     --size=2  --ondisk=sda   
+partition /boot    --fstype xfs	   --size=1024   --ondisk=sda
+partition /boot/efi --fstype efi  --size 50	--ondisk=sda
+partition pv.Ameridea --size=0 --grow
+volgroup ameridea --pesize=59489 pv.Ameridea
+logvol	swap	--fstype xfs	--name=swap	--vgname=ameridea	--size=4098
+logvol	/	--fstype xfs		--name=root	--vgname=ameridea	--size=2048
+logvol	/usr	--fstype xfs	--name=usr	--vgname=ameridea	--size=10160 
+logvol	/usr/local	--fstype xfs	--name=usr_local	--vgname=ameridea	--size=2048
+logvol	/usr/local/bin	--fstype xfs	--name=usr_local_bin	--vgname=ameridea	--size=1024
+logvol	/tmp	--fstype xfs  --name=tmp	--vgname=ameridea	--size=5120
+logvol 	/opt	--fstype xfs	--name=opt	--vgname=ameridea	--size=5120
+logcol	/var	--fstype xfs	--name=var	--vgname=ameridea	--size=5120
+logvol /var/lib --fstype xfs	--name=var_lib	--vgname=ameridea	--size=5120
+logvol	/var/tmp	--fstype xfs	--name=var_tmp	--vgname=ameridea	--size=10160
+logvol	/var/log	--fstype xfs	--name=var_log	--vgname=ameridea	--size=5120
+logvol	/var/crash	--fstype xfs	--name=var_crash	--vgname=ameridea	--size=5120
+logvol	/srv	--fstype xfs	--name=srv	--vgname=ameridea	-size=5120
+logvol	/var/www	--fstype xfs --name=var_www	-vgname=ameridea	--size=20480
+logvol	/lxc	--fstype xfs	--name=lxc	--vgname=ameridea	--size=2048
+logvol	/scripts	--fstype xfs 	--name=scripts	--vgname=ameridea	--size=1024
+logvol /studio	--fstype xfs	--name=studio	--vgname=ameridea	--size=10160
+logvol	/home	--fstype xfs	--name=home	--vgname=Secured-Fedora	--size=128000
 
 bootloader --location mbr
 authconfig --enableshadow --enablesha512
@@ -144,7 +150,7 @@ lightdm
 @server-hardware-support
 @3d-printing
 @Design-suite
-@
+@rpm-development-tools
 # Common server packages
 @mysql
 @sql-server
@@ -200,17 +206,14 @@ man-pages-en
 %post --nochroot
 cp -fa /usb/yum.repos.d/* /mnt/sysimage/etc/yum.repos.d
 cp -fa /etc/resolv.conf /mnt/sysimage/etc/resolv.conf
-cp -fa /usb/.config/* /mnt/sysimage/home/server/.config/
-cp -fa /usb/.ssh/*  /mnt/sysimage/.ssh/
 
 %post
 
 ## Log errors by creating one big subshell
 (
-hostname set-hostname server.linuxnet
-domainname linuxnet.net
+hostname set-hostname server.ameridea
 network --ntpservers=23.239.14.112,108.61.73.244,128.138.141.172,66.187.233.4,193.5.68.2
-network --nameservers=4.2.2.2,8.8.8.8,10.160.195.60,129.174.68.90,208.67.222.222
+network --nameservers=4.2.2.2,8.8.8.8,200.35.146.236,69.60.125.236,208.67.222.222
 
 ############# Adding Security Enhancements ############################
 
@@ -517,7 +520,7 @@ echo "LNX00520 Complete"
 
 # Add some enhancements to sysctl
 cat << 'EOF' >> /etc/sysctl.conf
-net.ipv4.ip_forward = 0
+net.ipv4.ip_forward = 1
 net.ipv4.conf.all.send_redirects = 0
 net.ipv4.conf.default.send_redirects = 0
 net.ipv4.tcp_max_syn_backlog = 1280
