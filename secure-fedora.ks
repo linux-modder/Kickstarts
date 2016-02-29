@@ -69,7 +69,7 @@ bootloader --location mbr
 authconfig --enableshadow --enablesha512
 selinux --enforcing
 timezone --utc America/New_York
-firewall-cmd --enabled --port=22:tcp  # This will be further restricted later
+firewall-cmd --enabled --port=22;tcp # This will be further restricted later
 halt
 
 ########## UPDATE THE PACKAGE LIST #############
@@ -102,12 +102,13 @@ vlock
 inxi
 htop
 terminator
-@xfce-desktop
+dstat
 xfce-desktop-environment
 vnstat
 lynx
 tuned
-lynx
+links
+sectool
 android-tools
 ifuse*
 mc
@@ -124,6 +125,7 @@ dracut-*
 -gnome-session
 -kde*
 lightdm
+sddm
 -lightdm-razorqt
 # Pulls in qt
 -oprofile-gui
@@ -204,14 +206,9 @@ man-pages-en
 %pre
 
 %post --nochroot
-cp -fa /usb/yum.repos.d/* /mnt/sysimage/etc/yum.repos.d
-cp -fa /etc/resolv.conf /mnt/sysimage/etc/resolv.conf
-
-%post
-
-## Log errors by creating one big subshell
+# Collect errors by creating one big subshell
 (
-hostname set-hostname server.ameridea
+hostname set-hostname linux01.ameridea.net
 network --ntpservers=23.239.14.112,108.61.73.244,128.138.141.172,66.187.233.4,193.5.68.2
 network --nameservers=4.2.2.2,8.8.8.8,200.35.146.236,69.60.125.236,208.67.222.222
 
@@ -313,11 +310,12 @@ chmod +x /etc/profile.d/os-security.sh
 # Reset the umasks for all users to 077
 echo "Locking down GEN002560"
 perl -npe 's/umask\s+0\d2/umask 077/g' -i /etc/bashrc
+perl -npe ='s/umask\s+0\d2/umask 077/g' -i /etc/zshrc
 perl -npe 's/umask\s+0\d2/umask 077/g' -i /etc/csh.cshrc
 echo "GEN002560 Complete"
 
 
-## Require GUI consoles to lock if idle longer than 30 minutes. 
+## Require GUI consoles to lock if idle longer than 10 minutes. 
 if [ -f /etc/gconf/gconf.xml.mandatory ]; then 
   gconftool-2 --direct \
 	--config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
@@ -333,7 +331,7 @@ if [ -f /etc/gconf/gconf.xml.mandatory ]; then
   gconftool-2 --direct \
 	--config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
 	--type int \
-	--set /apps/gnome-screensaver/idle_delay 30
+	--set /apps/gnome-screensaver/idle_delay 10
 fi
 
 ## No one gets to run cron or at jobs unless we say so.
