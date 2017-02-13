@@ -1,11 +1,12 @@
 # SCAP Security Guide USGCB profile kickstart for Fedora 25.
-# Version: 0.0.1
-# Date: 2014-10-23
+# Version: 0.0.0
+# Date: 2017-02-13
 #
 # Based on:
 # http://fedoraproject.org/wiki/Anaconda/Kickstart
 # https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Installation_Guide/s1-kickstart2-options.html
 # http://usgcb.nist.gov/usgcb/content/configuration/workstation-ks.cfg
+# https://pagure.io/fedora-kickstarts/raw/master/f/fedora-live-security.ks
 
 # Install a fresh new system (optional)
 install
@@ -68,7 +69,7 @@ authconfig --enableshadow --passalgo=sha512
 selinux --enforcing
 
 # Set the system time zone (required)
-timezone --utc America/New_York
+timezone --utc Etc/UTC
 
 # Specify how the bootloader should be installed (required)
 # Plaintext password is: password
@@ -159,19 +160,19 @@ openscap-utils
 %post --log /root/oscap.log
 
 SSG_GIT_CONTENT="/root/scap-security-guide"
-SSG_GIT_RHEL6="$SSG_GIT_CONTENT/RHEL/6"
+SSG_GIT_FEDORA="$SSG_GIT_CONTENT/Fedora"
 SSG_GIT_URI="https://github.com/OpenSCAP/scap-security-guide.git"
 SSG_SHARE_DIR="/usr/share/scap-security-guide"
 
 # Retrieve the most recent SCAP Security Guide repository content & build
-# the RHEL-6 benchmark.
+# the Fedora benchmark.
 
 # NOTE: Pointing to upstream SCAP Security Guide repository. Downstream/stable editions
-#       (e.g. those to ship natively with Red Hat Enterprise Linux 6) will be updated to
+#       (e.g. those to ship natively with Fedora) will be updated to
 #       point to natively included scap-security-guide RPM package.
 
 git clone $SSG_GIT_URI $SSG_GIT_CONTENT
-cd $SSG_GIT_RHEL6
+cd $SSG_GIT_FEDORA
 make
 
 # Copy the remediation functions library to the system too
@@ -182,8 +183,8 @@ cp -a $SSG_GIT_CONTENT/shared/remediations/bash/templates/remediation_functions 
 # To create a system compliant against different RHEL-6 SCAP Security Guide profile specify selected
 # profile name after the --profile oscap tool option
 
-oscap xccdf eval --remediate --profile usgcb-rhel6-server --report /root/oscap_usgcb_remediation_report.html \
-"$SSG_GIT_RHEL6/output/ssg-rhel6-xccdf.xml"
+oscap xccdf eval --remediate --profile standard --report /root/oscap_usgcb_remediation_report.html \
+"$SSG_GIT_FEDORA/output/ssg-security-standard-xccdf.xml"
 
 # Delete the retrieved GIT content
 rm -rf $SSG_GIT_CONTENT
@@ -192,4 +193,4 @@ rm -rf $SSG_GIT_CONTENT
 
 # Reboot after the installation is complete (optional)
 # --eject	attempt to eject CD or DVD media before rebooting
-reboot --eject
+halt
